@@ -7,14 +7,16 @@ using UnityEngine;
 namespace Heroicsolo.DI
 {
     [AttributeUsage(AttributeTargets.Field)]
-    public class InjectAttribute : Attribute
-    {
-
-    }
+    public class InjectAttribute : Attribute { };
 
     public class SystemsManager : MonoBehaviour
     {
         private static List<ISystem> SystemsContainer = new List<ISystem>();
+
+        public static bool ContainsSystem(Type systemType)
+        {
+            return SystemsContainer.FindIndex(x => systemType.IsInstanceOfType(x)) >= 0;
+        }
 
         public static void RegisterSystem<T>(T systemInstance) where T : MonoBehaviour, ISystem
         {
@@ -26,6 +28,14 @@ namespace Heroicsolo.DI
                 {
                     InjectSystemsTo(sys);
                 }
+            }
+        }
+
+        public static void UnregisterSystem<T>(T systemInstance) where T : MonoBehaviour, ISystem
+        {
+            if (SystemsContainer.Contains(systemInstance))
+            {
+                SystemsContainer.Remove(systemInstance);
             }
         }
 
@@ -65,7 +75,8 @@ namespace Heroicsolo.DI
             foreach (ISystem sys in SystemsContainer)
             {
                 InjectSystemsTo(sys);
-                DontDestroyOnLoad(sys.GetGameObject());
+                GameObject go = (sys as MonoBehaviour).gameObject;
+                DontDestroyOnLoad(go);
             }
         }
     }
