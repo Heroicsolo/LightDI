@@ -1,4 +1,4 @@
-namespace Heroicsolo.DI
+namespace LightDI
 {
     public interface ISystem
     {

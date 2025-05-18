@@ -1,11 +1,10 @@
-using Heroicsolo.DI;
 using UnityEngine;
 
-namespace Heroicsolo.Examples
+namespace LightDI.Examples
 {
-    public class InputManager : SystemBase, IInputManager
+    public sealed class InputManager : SystemBase, IInputManager
     {
-        private Vector3 movementDirection;
+        private Vector3 _movementDirection;
 
         public GameObject GetGameObject()
         {
@@ -14,31 +13,31 @@ namespace Heroicsolo.Examples
 
         public Vector3 GetMovementDirection()
         {
-            return movementDirection;
+            return _movementDirection;
         }
 
-        void Update()
+        private void Update()
         {
-            movementDirection = Vector3.zero;
+            _movementDirection = Vector3.zero;
 
             if (Input.GetKey(KeyCode.W))
             {
-                movementDirection += Vector3.forward;
+                _movementDirection += Vector3.forward;
             }
             if (Input.GetKey(KeyCode.S))
             {
-                movementDirection -= Vector3.forward;
+                _movementDirection -= Vector3.forward;
             }
             if (Input.GetKey(KeyCode.D))
             {
-                movementDirection += Vector3.right;
+                _movementDirection += Vector3.right;
             }
             if (Input.GetKey(KeyCode.A))
             {
-                movementDirection -= Vector3.right;
+                _movementDirection -= Vector3.right;
             }
 
-            movementDirection.Normalize();
+            _movementDirection.Normalize();
         }
     }
 }

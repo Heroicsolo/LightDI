@@ -1,11 +1,12 @@
-using Heroicsolo.DI;
 using UnityEngine;
 
-namespace Heroicsolo.Examples
+namespace LightDI.Examples
 {
-    public class CameraController : SystemBase
+    public sealed class CameraController : SystemBase
     {
         [SerializeField][Min(0f)] private float cameraFollowSpeed = 8f;
+
+        [Inject] private PlayerController _playerController;
 
         private Transform _cameraTransform;
         private Transform _playerTransform;
@@ -17,26 +18,25 @@ namespace Heroicsolo.Examples
             return gameObject;
         }
 
-        public void SetPlayerTransform(Transform playerTransform)
-        {
-            _cameraTransform ??= Camera.main.transform;
-            _playerTransform = playerTransform;
-            _offset = _cameraTransform.position - _playerTransform.position;
-        }
-
         public Vector3 GetWorldDirection(Vector3 viewportDirection)
         {
             return transform.TransformDirection(viewportDirection);
         }
 
-        void Start()
+        protected override void Start()
         {
-            _cameraTransform = Camera.main.transform;
+            base.Start();
+            _cameraTransform = Camera.main?.transform;
+            _playerTransform = _playerController.transform;
+            if (_cameraTransform != null)
+            {
+                _offset = _cameraTransform.position - _playerTransform.position;
+            }
         }
 
-        void Update()
+        private void Update()
         {
-            if (_playerTransform != null)
+            if (_playerTransform)
             {
                 _cameraTransform.position = Vector3.Lerp(_cameraTransform.position,
                     _playerTransform.position + _offset,

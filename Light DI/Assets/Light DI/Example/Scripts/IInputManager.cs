@@ -1,7 +1,6 @@
-using Heroicsolo.DI;
 using UnityEngine;
 
-namespace Heroicsolo.Examples
+namespace LightDI.Examples
 {
     public interface IInputManager : ISystem
     {

@@ -1,29 +1,29 @@
-using Heroicsolo.DI;
 using UnityEngine;
 
-namespace Heroicsolo.Examples
+namespace LightDI.Examples
 {
-    public class PlayerController : MonoBehaviour
+    public sealed class PlayerController : MonoBehaviour, IInjectable
     {
         [SerializeField][Min(0f)] private float moveSpeed = 5f;
 
-        [Inject] private CameraController cameraController;
-        [Inject] private IInputManager inputManager;
+        [Inject] private CameraController _cameraController;
+        [Inject] private IInputManager _inputManager;
 
-        private CharacterController characterController;
+        private CharacterController _characterController;
 
-        void Start()
+        public void PostInject()
         {
-            SystemsManager.InjectSystemsTo(this);
-
-            cameraController.SetPlayerTransform(transform);
-
-            characterController = GetComponent<CharacterController>();
         }
 
-        void Update()
+        private void Start()
         {
-            characterController.Move(moveSpeed * Time.deltaTime * cameraController.GetWorldDirection(inputManager.GetMovementDirection()));
+            InjectionManager.RegisterObject(this);
+            _characterController = GetComponent<CharacterController>();
+        }
+
+        private void Update()
+        {
+            _characterController.Move(moveSpeed * Time.deltaTime * _cameraController.GetWorldDirection(_inputManager.GetMovementDirection()));
         }
     }
 }

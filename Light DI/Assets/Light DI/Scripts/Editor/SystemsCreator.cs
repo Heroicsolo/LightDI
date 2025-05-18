@@ -1,14 +1,14 @@
-using Heroicsolo.Utils;
+using LightDI.Utils;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Heroicsolo.DI.Editor
+namespace LightDI.Editor
 {
-    public class SystemsCreator : EditorWindow
+    internal sealed class SystemsCreator : EditorWindow
     {
-        private string className = "";
-        private bool createSystemBtnClicked;
+        private string _className = "";
+        private bool _createSystemBtnClicked;
 
         [MenuItem("Tools/Light DI/Create System")]
         public static void ShowWindow()
@@ -20,22 +20,22 @@ namespace Heroicsolo.DI.Editor
         {
             GUILayout.Label("Create System class", EditorStyles.boldLabel);
 
-            string prevClassName = className;
+            var prevClassName = _className;
 
-            className = EditorGUILayout.TextField("Class Name", className);
+            _className = EditorGUILayout.TextField("Class Name", _className);
 
-            if (className != prevClassName)
+            if (_className != prevClassName)
             {
-                createSystemBtnClicked = false;
+                _createSystemBtnClicked = false;
             }
 
             if (GUILayout.Button("Create System"))
             {
                 CreateSystem();
-                createSystemBtnClicked = true;
+                _createSystemBtnClicked = true;
             }
 
-            if (createSystemBtnClicked && IsValidClassName(className))
+            if (_createSystemBtnClicked && IsValidClassName(_className))
             {
                 if (GUILayout.Button("Instantiate System on scene"))
                 {
@@ -47,29 +47,29 @@ namespace Heroicsolo.DI.Editor
         private void CreateSystem()
         {
             // Ensure the class name is valid
-            if (!IsValidClassName(className))
+            if (!IsValidClassName(_className))
             {
                 Debug.LogError("Invalid class name. Please provide a valid class name.");
                 return;
             }
 
             // Define the script content
-            string scriptContent = $@"using Heroicsolo.DI;
+            var scriptContent = $@"using LightDI;
 using UnityEngine;
 
-public class {className} : SystemBase
+public class {_className} : SystemBase
 {{
 
 }}
 ";
 
             // Define the path where the script will be saved
-            string path = "Assets/" + className + ".cs";
+            var path = "Assets/" + _className + ".cs";
 
             // Check if the file already exists
             if (File.Exists(path))
             {
-                Debug.LogError($"A script with the name '{className}' already exists.");
+                Debug.LogError($"A script with the name '{_className}' already exists.");
                 return;
             }
 
@@ -77,26 +77,26 @@ public class {className} : SystemBase
             File.WriteAllText(path, scriptContent);
             AssetDatabase.Refresh(); // Refresh the AssetDatabase so Unity recognizes the new file
 
-            Debug.Log($"Script '{className}.cs' has been created at {path}");
+            Debug.Log($"Script '{_className}.cs' has been created at {path}");
 
             Repaint();
         }
 
         private void InstantiateSystem()
         {
-            var scriptType = TypeUtility.GetTypeByName(className);
+            var scriptType = TypeUtility.GetTypeByName(_className);
 
             if (scriptType != null)
             {
                 // Create a new GameObject and add the script as a component
-                GameObject newObject = new GameObject(className);
+                var newObject = new GameObject(_className);
                 newObject.AddComponent(scriptType);
                 AssetDatabase.Refresh();
             }
         }
 
         // Simple check for valid class name (can be expanded if needed)
-        private bool IsValidClassName(string className)
+        private static bool IsValidClassName(string className)
         {
             return !string.IsNullOrEmpty(className) && char.IsLetter(className[0]) && !className.Contains(" ");
         }

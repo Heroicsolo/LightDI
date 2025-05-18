@@ -1,15 +1,14 @@
 using System;
-using System.Reflection;
 
-namespace Heroicsolo.Utils
+namespace LightDI.Utils
 {
-    public class TypeUtility
+    public static class TypeUtility
     {
         public static Type GetTypeByName(string name)
         {
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (Type type in assembly.GetTypes())
+                foreach (var type in assembly.GetTypes())
                 {
                     if (type.Name == name)
                         return type;

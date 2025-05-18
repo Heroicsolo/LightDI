@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5832635753752697845}
   - component: {fileID: 3825706298494850544}
   m_Layer: 0
-  m_Name: SystemsManager
+  m_Name: InjectionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
